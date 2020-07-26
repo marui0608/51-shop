@@ -57,7 +57,7 @@
           <tr>
             <td height="45">&nbsp;是否新品：</td>
             <td>&nbsp;
-                {% if goods.is_new%}
+                {% if goods.is_new == 0%}
                     不是新品
                 {% else %}
                     是新品
@@ -65,7 +65,7 @@
             </td>
             <td>&nbsp;是否特价：</td>
             <td>
-                {% if goods.is_sale%}
+                {% if goods.is_sale == 0%}
                     不是特价商品
                 {% else %}
                     是特价商品

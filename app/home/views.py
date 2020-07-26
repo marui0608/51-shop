@@ -1,20 +1,16 @@
-import json
 import random
 import string
 from functools import wraps
 from io import BytesIO
 
-import requests
 from PIL import Image, ImageFont, ImageDraw
 from flask import render_template, url_for, redirect, flash, session, request, make_response
-from oauthlib.oauth1.rfc5849.endpoints import access_token
 from werkzeug.security import generate_password_hash
 
 from app import db
 from app.home import weibo
 from app.home.forms import LoginForm, RegisterForm, PasswordForm, InfoForm
 from app.models import User, Goods, Orders, Cart, OrdersDetail
-from config import config
 from . import home
 
 
@@ -135,23 +131,19 @@ def shopping_cart():
         return render_template("home/empty_cart.html")
 
 
-@home.route("/cart_order/", methods=["GET,POST"])
+@home.route("/cart_order/", methods=['GET', 'POST'])
 @user_login
 def cart_order():
-    if request.method == "POST":
-        # 获取用户ID
-        user_id = session.get("user_id", 0)
-        orders = Orders(
-            user_id=user_id,
-            recevie_name=request.form.get("recevie_name"),
-            recevie_tel=request.form.get("recevie_tel"),
-            recevie_address=request.form.get("recevie_address"),
-            remark=request.form.get("remark")
-        )
-        # 添加数据
-        db.session.add(orders)
-        # 提交数据
-        db.session.add(orders)
+    if request.method == 'POST':
+        user_id = session.get('user_id', 0)  # 获取用户id
+        # 添加订单
+        orders = Orders(user_id=user_id,
+                        recevie_name=request.form.get('recevie_name'),
+                        recevie_tel=request.form.get('recevie_tel'),
+                        recevie_address=request.form.get('recevie_address'),
+                        remark=request.form.get('remark'))
+        db.session.add(orders)  # 添加数据
+        db.session.commit()  # 提交数据
         # 添加订单详情
         cart = Cart.query.filter_by(user_id=user_id).all()
         object = []
@@ -161,14 +153,11 @@ def cart_order():
                     order_id=orders.id,
                     goods_id=item.goods_id,
                     number=item.number,
-                )
-            )
+                ))
         db.session.add_all(object)
         # 更改购物车状态
         Cart.query.filter_by(user_id=user_id).update({'user_id': 0})
-        # 提交
         db.session.commit()
-        # 重定向首页
     return redirect(url_for('home.index'))
 
 
@@ -383,4 +372,4 @@ def info():
         db.session.add(user)
         db.session.commit()
         return "<script>alert('手机号修改成功');location.href='/';</script>"
-    return render_template("home/info.html",form=form)
+    return render_template("home/info.html", form=form)

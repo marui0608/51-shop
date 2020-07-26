@@ -109,6 +109,7 @@ def goods_add():
     # 小分类选择
     forms.subcat.choices = [(i.id, i.cat_name) for i in subcat]
     if forms.validate_on_submit():
+        print('**************************************')
         name = forms.name.data
         supercat = forms.supercat.data
         subcat = forms.subcat.data
@@ -118,13 +119,14 @@ def goods_add():
         is_new = int(forms.is_new.data)
         is_sale = int(forms.is_sale.data)
         intro = forms.intro.data
-        good = Goods(name=name, supercat_id=supercat, subcat_id=subcat, picture=picture,
+        picture.save(IMG_URL + picture.filename)
+        good = Goods(name=name, supercat_id=supercat, subcat_id=subcat, picture=picture.filename,
                      original_price=old_price, current_price=new_price, is_new=is_new,
                      is_sale=is_sale, introduction=intro)
         db.session.add(good)
         db.session.commit()
-        picture.save(IMG_URL + picture.filename)
         return redirect(url_for('admin.index'))
+    print('--------------------------------', forms.errors)
     return render_template("admin/goods_add.html", form=forms)
 
 
@@ -156,7 +158,7 @@ def goods_edit(id):
             good.name = forms.name.data
             good.supercat_id = int(forms.supercat.data)
             good.subcat_id = int(forms.subcat.data)
-            good.picture = forms.picture.data
+            good.picture = forms.picture.data.filename
             good.original_price = float(forms.old_price.data)
             good.current_price = float(forms.new_price.data)
             good.is_new = int(forms.is_new.data)
