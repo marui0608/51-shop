@@ -2,7 +2,7 @@
 {% block content %}
 <script>
 $(document).ready(function(){
-	$('#supercat_id').change(function(){
+	$('#supercat').change(function(){
 	    super_id = $(this).children('option:selected').val()
 	    selSubCat(super_id);
 	})
@@ -19,7 +19,7 @@ function selSubCat(val){
                 }else{
                      html_doc += '<option value=0>前选择子类</option>'
                 }
-                $("#subcat_id").html(html_doc); 		//显示获取到的小分类
+                $("#subcat").html(html_doc); 		//显示获取到的小分类
     });
 }
 </script>
@@ -51,7 +51,7 @@ function selSubCat(val){
         <td>&nbsp;</td>
       </tr>
     </table>
-        <form action="" method="post">
+        <form action="" method="POST" enctype="multipart/form-data">
             <table width="94%"  border="0" align="center" cellpadding="0" cellspacing="0" bordercolordark="#FFFFFF">
               <tr>
                 <td width="14%" height="27">&nbsp;商品名称：</td>
@@ -65,42 +65,55 @@ function selSubCat(val){
               <tr>
                 <td height="27">&nbsp;所属大类：</td>
                 <td width="31%" height="27">&nbsp;
-                    {{ form.supercat_id }}
+                    {{ form.supercat }}
                 </td>
                 <td width="13%" height="27"> &nbsp;所属小类：</td>
                 <td width="42%" height="27" id="subType">
-                    {{ form.subcat_id }}
+                    {{ form.subcat }}
                 </td>
               </tr>
               <tr>
-                <td height="41">&nbsp;图片文件：</td>
-                <td height="41">&nbsp;
+                <td >&nbsp;图片文件：</td>
+                <td >&nbsp;
                     {{ form.picture }}
                 </td>
-                <td height="41">&nbsp;定　　价：</td>
-                <td height="41">
+              </tr>
+              <tr>
+                <td height="21">&nbsp;定　　价：</td>
+                <td height="21">
                     <span style="float:left;">
-                        {{form.original_price}}
+                        {{form.old_price}}
                     </span>
                     <span  style="float:left;padding-top:10px;">&nbsp;(元)</span>
-                    {% for err in form.original_price.errors %}
+                    {% for err in form.old_price.errors %}
+                        <span  style="float:left;padding-top:10px;color:red">{{ err }}</span>
+                    {% endfor %}
+                </td>
+                <td height="21">&nbsp;现　　价：</td>
+                <td height="21">
+                    <span style="float:left;">
+                        {{form.new_price}}
+                    </span>
+                    <span  style="float:left;padding-top:10px;">&nbsp;(元)</span>
+                    {% for err in form.new_price.errors %}
                         <span  style="float:left;padding-top:10px;color:red">{{ err }}</span>
                     {% endfor %}
                 </td>
               </tr>
               <tr>
                 <td height="45">&nbsp;是否新品：</td>
-                <td> {{form.is_new}} </td>
+                <td> {{form.is_new(class='is_radio')}} </td>
                 <td>&nbsp;是否特价：</td>
-                <td> {{form.is_sale}} </td>
+                <td> {{form.is_sale(class='is_radio')}} </td>
               </tr>
               <tr>
                 <td height="103">&nbsp;商品简介：</td>
                 <td colspan="3">
                     <span class="style5">&nbsp; </span>
-                    {{ form.introduction }}
+                    {{ form.intro(style='height:100px') }}
                 </td>
               </tr>
+              {{ err }}
               <tr>
                 <td height="38" colspan="4" align="center">
                     {{ form.csrf_token }}

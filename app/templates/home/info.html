@@ -1,0 +1,66 @@
+{% extends "home/common.html" %}
+{% block content %}
+	<!-- //网站头部 -->
+	<div id="mr-mainbody" class="container mr-mainbody">
+		<div class="row">
+			<div id="mr-content" class="mr-content col-xs-12">
+				<div class="login-wrap"
+					style="margin-bottom: 60px; margin-top: 50px">
+					<div class="login">
+						<div class="page-header" style="pause: 0px;">
+							<h1 class="login_h1">更改手机号</h1>
+						</div>
+						<!-- 会员更改手机号表单 -->
+						<form  action="" method="post" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">
+										{{form.phone.label}}
+									</div>
+									<div class="col-sm-8">
+										<!-- 手机号文本框 -->
+										{{form.phone}}
+										{% for err in form.phone.errors %}
+										<span class="error">{{ err }}</span>
+										{% endfor %}
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">
+										{{form.phone1.label}}
+									</div>
+									<div class="col-sm-8">
+										<!-- 手机号文本框 -->
+										{{form.phone1}}
+										{% for err in form.phone1.errors %}
+										<span class="error">{{ err }}</span>
+										{% endfor %}
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">
+										{{form.rephone.label}}
+									</div>
+									<div class="col-sm-8">
+										<!-- 确认手机号文本框 -->
+										{{form.rephone}}
+										{% for err in form.rephone.errors %}
+										<span class="error">{{ err }}</span>
+										{% endfor %}
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-offset-4 col-sm-8">
+										{{ form.csrf_token }}
+										{{ form.submit }}
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- //主体内容 -->
+{% endblock %}
