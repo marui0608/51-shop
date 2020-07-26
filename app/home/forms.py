@@ -249,3 +249,55 @@ class RegisterForm(FlaskForm):
         user = User.query.filter_by(phone=phone).count()
         if user == 1:
             raise ValidationError("手机号已经存在！")
+
+class InfoForm(FlaskForm):
+    """
+     修改密码表单
+     """
+    phone = StringField(
+        label="原始手机 ：",
+        validators=[
+            DataRequired("原始手机号不能为空！")
+        ],
+        description="原始手机号",
+        render_kw={
+            "placeholder": "请输入原始手机号！",
+            "size": 38,
+        }
+    )
+    phone1 = StringField(
+        label="新手机号 ：",
+        validators=[
+            DataRequired("新手机号不能为空！")
+        ],
+        description="新手机号",
+        render_kw={
+            "placeholder": "请输入新手机号！",
+            "size": 38,
+        }
+    )
+    rephone= StringField(
+        label="确认手机号 ：",
+        validators=[
+            DataRequired("请输入确认手机号！"),
+            EqualTo('password', message="两次手机号不一致！")
+        ],
+        description="确认手机号",
+        render_kw={
+            "placeholder": "请输入确认手机号！",
+            "size": 38,
+        }
+    )
+    submit = SubmitField(
+        '确认修改',
+        render_kw={
+            "class": "btn btn-primary login",
+        }
+    )
+    def validate_old_password(self, field):
+        from flask import session
+        phone = field.data
+        user_id = session["user_id"]
+        user = User.query.get(int(user_id))
+        if not user.phone:
+            raise ValidationError("原始密码手机号！")

@@ -12,7 +12,7 @@ from werkzeug.security import generate_password_hash
 
 from app import db
 from app.home import weibo
-from app.home.forms import LoginForm, RegisterForm, PasswordForm
+from app.home.forms import LoginForm, RegisterForm, PasswordForm, InfoForm
 from app.models import User, Goods, Orders, Cart, OrdersDetail
 from config import config
 from . import home
@@ -371,3 +371,16 @@ def weibo_login():
 #                 info = json.loads(infodats)
 #                 return render_template('home/index.html', info=info, uid=uid)
 #     return render_template('home/index.html')
+
+@home.route('/info/')
+def info():
+    form = InfoForm()
+    if form.validate_on_submit():
+        data = form.data
+        user = User.query.filter_by(username=session["username"]).first()
+
+        user.phone = data["phone"]
+        db.session.add(user)
+        db.session.commit()
+        return "<script>alert('手机号修改成功');location.href='/';</script>"
+    return render_template("home/info.html",form=form)
