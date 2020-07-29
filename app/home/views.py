@@ -35,47 +35,42 @@ def index():
     """
     首页
     """
-    # 获取2个热门商品
+
     hot_goods = Goods.query.order_by(Goods.views_count.desc()).limit(2).all()
-    # 获取12个新品
     new_goods = Goods.query.filter_by(is_new=1).order_by(
         Goods.addtime.desc()
     ).limit(12).all()
-    # 获取12个打折商品
     sale_goods = Goods.query.filter_by(is_sale=1).order_by(
         Goods.addtime.desc()
     ).limit(12).all()
-    return render_template('home/index.html', new_goods=new_goods, sale_goods=sale_goods, hot_goods=hot_goods)  # 渲染模板
+    return render_template('home/index.html', new_goods=new_goods, sale_goods=sale_goods, hot_goods=hot_goods) 
 
 
 @home.route("/goods_list/<int:supercat_id>/")
-def goods_list(supercat_id=None):  # supercat_id 为商品大分类ID
+def goods_list(supercat_id=None): 
     """
     商品页
     """
-    page = request.args.get('page', 1, type=int)  # 获取page参数值
+    page = request.args.get('page', 1, type=int) 
     page_data = Goods.query.filter_by(supercat_id=supercat_id).paginate(page=page, per_page=12)
     hot_goods = Goods.query.filter_by(supercat_id=supercat_id).order_by(Goods.views_count.desc()).limit(7).all()
     return render_template('home/goods_list.html', page_data=page_data, hot_goods=hot_goods, supercat_id=supercat_id)
 
 
 @home.route("/goods_detail/<int:id>/")
-def goods_detail(id=None):  # id 为商品ID
+def goods_detail(id=None):  
     """
     详情页
     """
-    user_id = session.get('user_id', 0)  # 获取用户ID,判断用户是否登录
-    goods = Goods.query.get_or_404(id)  # 根据景区ID获取景区数据，如果不存在返回404
-    # 浏览量加1
+    user_id = session.get('user_id', 0) 
+    goods = Goods.query.get_or_404(id)  
     goods.views_count += 1
-    db.session.add(goods)  # 添加数据
-    db.session.commit()  # 提交数据
-    # 获取左侧热门商品
+    db.session.add(goods) 
+    db.session.commit() 
     hot_goods = Goods.query.filter_by(subcat_id=goods.subcat_id).order_by(Goods.views_count.desc()).limit(5).all()
-    # 获取底部相关商品
     similar_goods = Goods.query.filter_by(subcat_id=goods.subcat_id).order_by(Goods.addtime.desc()).limit(5).all()
     return render_template('home/goods_detail.html', goods=goods, hot_goods=hot_goods, similar_goods=similar_goods,
-                           user_id=user_id)  # 渲染模板
+                           user_id=user_id) 
 
 
 @home.route("/search/")
@@ -83,11 +78,10 @@ def goods_search():
     """
     搜素功能
     """
-    page = request.args.get('page', 1, type=int)  # 获取page参数值
+    page = request.args.get('page', 1, type=int) 
     keywords = request.args.get('keywords', '', type=str)
 
     if keywords:
-        # 使用like实现模糊查询
         page_data = Goods.query.filter(Goods.name.like("%" + keywords + "%")).order_by(
             Goods.addtime.desc()
         ).paginate(page=page, per_page=12)
